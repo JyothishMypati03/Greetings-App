@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @WebServlet("/greetings/*")
@@ -99,6 +100,7 @@ public class GreetingServlet extends HttpServlet {
     }
 
     // UC-02: Get Greeting By ID
+    // UC-03: Get All Greetings
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -107,45 +109,48 @@ public class GreetingServlet extends HttpServlet {
 
         try {
 
-            // Get ID from URL
             String path =
                     request.getPathInfo();
 
-            // Example:
-            // /greetings/1
-            // path = /1
+            response.setContentType(
+                    "application/json"
+            );
 
-            if (path == null ||
-                    path.equals("/") ||
-                    path.length() <= 1) {
+            /*
+             * UC-03
+             * GET /greetings
+             */
+            if (path == null || path.equals("/")) {
+
+                List<Greeting> greetings =
+                        greetingService.getAllGreetings();
 
                 response.setStatus(
-                        HttpServletResponse.SC_BAD_REQUEST
+                        HttpServletResponse.SC_OK
                 );
 
-                response.getWriter().write(
-                        "{\"error\":\"Greeting ID is required\"}"
+                objectMapper.writeValue(
+                        response.getWriter(),
+                        greetings
                 );
 
                 return;
             }
 
-            // Remove "/" from /1
+            /*
+             * UC-02
+             * GET /greetings/{id}
+             */
+
             String idString =
                     path.substring(1);
 
             Long id =
                     Long.parseLong(idString);
 
-            // Call Service
             Optional<Greeting> greeting =
                     greetingService.getGreetingById(id);
 
-            response.setContentType(
-                    "application/json"
-            );
-
-            // Greeting found
             if (greeting.isPresent()) {
 
                 response.setStatus(
@@ -159,7 +164,6 @@ public class GreetingServlet extends HttpServlet {
 
             } else {
 
-                // Greeting not found
                 response.setStatus(
                         HttpServletResponse.SC_NOT_FOUND
                 );
@@ -204,6 +208,4 @@ public class GreetingServlet extends HttpServlet {
             );
         }
     }
-
-
 }

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,7 +91,47 @@ public class GreetingDAOImpl implements GreetingDAO{
 
     @Override
     public List<Greeting> findAll() throws SQLException {
-        return null;
+        String sql = """
+            SELECT greeting_id,
+                   user_name,
+                   greeting_message,
+                   created_date
+            FROM greetings
+            ORDER BY greeting_id
+            """;
+
+        List<Greeting> greetings = new ArrayList<>();
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                Greeting greeting = new Greeting();
+
+                greeting.setGreetingId(
+                        rs.getLong("greeting_id")
+                );
+
+                greeting.setUserName(
+                        rs.getString("user_name")
+                );
+
+                greeting.setGreetingMessage(
+                        rs.getString("greeting_message")
+                );
+
+                greeting.setCreatedDate(
+                        rs.getTimestamp("created_date")
+                                .toLocalDateTime()
+                );
+
+                greetings.add(greeting);
+            }
+        }
+
+        return greetings;
     }
 
     @Override

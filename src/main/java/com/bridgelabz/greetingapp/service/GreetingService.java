@@ -4,6 +4,7 @@ import com.bridgelabz.greetingapp.dao.GreetingDAO;
 import com.bridgelabz.greetingapp.model.Greeting;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class GreetingService {
@@ -51,6 +52,10 @@ public class GreetingService {
         return greetingDAO.findById(id);
     }
 
+    public List<Greeting> getAllGreetings()
+            throws SQLException {
 
+        return greetingDAO.findAll();
+    }
 
 }
