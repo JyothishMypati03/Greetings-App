@@ -1,6 +1,6 @@
 # Greetings App
 
-A Java web application for creating and retrieving greetings using Java Servlets, Plain JDBC, PostgreSQL, Maven, Jackson, Apache Tomcat, and Postman.
+A Java web application for creating, retrieving, listing, and updating greetings using Java Servlets, Plain JDBC, PostgreSQL, Maven, Jackson, Apache Tomcat, and Postman.
 
 ## Use Cases
 
@@ -9,6 +9,7 @@ A Java web application for creating and retrieving greetings using Java Servlets
 | UC-01 | Create Greeting    | `/greetings`      | POST   |
 | UC-02 | Get Greeting By ID | `/greetings/{id}` | GET    |
 | UC-03 | Get All Greetings  | `/greetings`      | GET    |
+| UC-04 | Update Greeting    | `/greetings/{id}` | PUT    |
 
 ## Technologies Used
 
@@ -168,14 +169,6 @@ GET http://localhost:8080/greetings/1
 }
 ```
 
-If the greeting does not exist:
-
-```json
-{
-  "error": "Greeting not found"
-}
-```
-
 ## UC-03: Get All Greetings
 
 ### Endpoint
@@ -207,6 +200,45 @@ GET http://localhost:8080/greetings
     "createdDate": "2026-08-11T16:00:00"
   }
 ]
+```
+
+## UC-04: Update Greeting
+
+### Endpoint
+
+```text
+PUT /greetings/{id}
+```
+
+### Example
+
+```text
+PUT http://localhost:8080/greetings/1
+```
+
+### Request
+
+```json
+{
+  "userName": "Jyothish Mypati",
+  "greetingMessage": "Updated greeting message!"
+}
+```
+
+### Response
+
+```json
+{
+  "message": "Greeting updated successfully"
+}
+```
+
+If the greeting does not exist:
+
+```json
+{
+  "error": "Greeting not found"
+}
 ```
 
 ## Architecture
@@ -245,38 +277,31 @@ Creates the PostgreSQL database connection using JDBC.
 
 ## How to Run
 
-### 1. Clone the Project
-
-```bash
-git clone <your-github-repository-url>
-cd Greetings-App
-```
-
-### 2. Create Database
+### 1. Create Database
 
 ```sql
 CREATE DATABASE greetings_app;
 ```
 
-### 3. Create Table
+### 2. Create Table
 
-Run the `greetings` table SQL provided above.
+Run the `greetings` table SQL given above.
 
-### 4. Configure Database
+### 3. Configure Database
 
 Create `db.properties` and add your PostgreSQL credentials.
 
-### 5. Build Project
+### 4. Build Project
 
 ```bash
 mvn clean package
 ```
 
-### 6. Run with Tomcat
+### 5. Run with Tomcat
 
 Deploy the generated WAR file to Apache Tomcat and start the server.
 
-### 7. Test with Postman
+### 6. Test with Postman
 
 **UC-01**
 
@@ -296,12 +321,19 @@ GET http://localhost:8080/greetings/1
 GET http://localhost:8080/greetings
 ```
 
+**UC-04**
+
+```text
+PUT http://localhost:8080/greetings/1
+```
+
 ## Use Case Status
 
 ```text
 UC-01: Create Greeting       COMPLETED
 UC-02: Get Greeting By ID    COMPLETED
 UC-03: Get All Greetings     COMPLETED
+UC-04: Update Greeting       COMPLETED
 ```
 
 ## Author

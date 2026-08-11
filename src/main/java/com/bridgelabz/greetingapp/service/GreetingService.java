@@ -58,4 +58,23 @@ public class GreetingService {
         return greetingDAO.findAll();
     }
 
+    public boolean updateGreeting(
+            Long id,
+            Greeting greeting) throws SQLException {
+
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException(
+                    "Greeting ID must be greater than 0"
+            );
+        }
+
+        if (greeting == null) {
+            throw new IllegalArgumentException(
+                    "Greeting cannot be null"
+            );
+        }
+
+        return greetingDAO.update(id, greeting);
+    }
+
 }

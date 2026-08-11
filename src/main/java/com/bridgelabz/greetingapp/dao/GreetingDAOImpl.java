@@ -136,7 +136,24 @@ public class GreetingDAOImpl implements GreetingDAO{
 
     @Override
     public boolean update(Long id, Greeting greeting) throws SQLException {
-        return false;
+        String sql = """
+            UPDATE greetings
+            SET user_name = ?,
+                greeting_message = ?
+            WHERE greeting_id = ?
+            """;
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, greeting.getUserName());
+            ps.setString(2, greeting.getGreetingMessage());
+            ps.setLong(3, id);
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+        }
     }
 
     @Override

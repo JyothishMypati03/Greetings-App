@@ -208,4 +208,118 @@ public class GreetingServlet extends HttpServlet {
             );
         }
     }
+
+    @Override
+    protected void doPut(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+
+            // Get ID from URL
+            String path = request.getPathInfo();
+
+            // Example:
+            // /greetings/1
+            // path = /1
+
+            if (path == null ||
+                    path.equals("/") ||
+                    path.length() <= 1) {
+
+                response.setStatus(
+                        HttpServletResponse.SC_BAD_REQUEST
+                );
+
+                response.setContentType("application/json");
+
+                response.getWriter().write(
+                        "{\"error\":\"Greeting ID is required\"}"
+                );
+
+                return;
+            }
+
+            // Remove "/" from /1
+            String idString = path.substring(1);
+
+            Long id = Long.parseLong(idString);
+
+            // Read JSON request body
+            Greeting greeting =
+                    objectMapper.readValue(
+                            request.getInputStream(),
+                            Greeting.class
+                    );
+
+            // Call Service
+            boolean updated =
+                    greetingService.updateGreeting(
+                            id,
+                            greeting
+                    );
+
+            response.setContentType(
+                    "application/json"
+            );
+
+            if (updated) {
+
+                response.setStatus(
+                        HttpServletResponse.SC_OK
+                );
+
+                response.getWriter().write(
+                        "{\"message\":\"Greeting updated successfully\"}"
+                );
+
+            } else {
+
+                response.setStatus(
+                        HttpServletResponse.SC_NOT_FOUND
+                );
+
+                response.getWriter().write(
+                        "{\"error\":\"Greeting not found\"}"
+                );
+            }
+
+        } catch (NumberFormatException e) {
+
+            response.setStatus(
+                    HttpServletResponse.SC_BAD_REQUEST
+            );
+
+            response.getWriter().write(
+                    "{\"error\":\"Invalid greeting ID\"}"
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            response.setStatus(
+                    HttpServletResponse.SC_BAD_REQUEST
+            );
+
+            response.getWriter().write(
+                    "{\"error\":\""
+                            + e.getMessage()
+                            + "\"}"
+            );
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+            response.setStatus(
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR
+            );
+
+            response.getWriter().write(
+                    "{\"error\":\"Database error\"}"
+            );
+        }
+    }
+
+
 }
