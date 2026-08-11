@@ -4,6 +4,7 @@ import com.bridgelabz.greetingapp.dao.GreetingDAO;
 import com.bridgelabz.greetingapp.model.Greeting;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class GreetingService {
 
@@ -37,5 +38,19 @@ public class GreetingService {
 
         return greetingDAO.create(greeting);
     }
+
+    public Optional<Greeting> getGreetingById(Long id)
+            throws SQLException {
+
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException(
+                    "Greeting ID must be greater than 0"
+            );
+        }
+
+        return greetingDAO.findById(id);
+    }
+
+
 
 }

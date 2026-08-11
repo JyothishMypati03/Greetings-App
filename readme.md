@@ -1,15 +1,60 @@
 # Greetings App
 
-A Java web application for creating greetings using Java Servlets, Plain JDBC, PostgreSQL, Maven, Jackson, Apache Tomcat, and Postman.
+A Java web application for creating and retrieving greetings using Java Servlets, Plain JDBC, PostgreSQL, Maven, Jackson, Apache Tomcat, and Postman.
 
 ## UC-01: Create Greeting
 
-The user can create a greeting by providing:
+Creates a new greeting and stores it in PostgreSQL.
 
-* User name
-* Greeting message
+**Endpoint**
 
-The greeting is stored in the PostgreSQL database.
+```text
+POST /greetings
+```
+
+**Request Body**
+
+```json
+{
+  "userName": "Jyothish",
+  "greetingMessage": "Hello, welcome to My Greetings App!"
+}
+```
+
+## UC-02: Get Greeting By ID
+
+Retrieves a greeting from PostgreSQL using its ID.
+
+**Endpoint**
+
+```text
+GET /greetings/{id}
+```
+
+**Example**
+
+```text
+GET http://localhost:8080/greetings/1
+```
+
+**Response**
+
+```json
+{
+  "greetingId": 1,
+  "userName": "Jyothish",
+  "greetingMessage": "Hello, welcome to My Greetings App!",
+  "createdDate": "2026-08-11T17:00:00"
+}
+```
+
+If the greeting does not exist:
+
+```json
+{
+  "error": "Greeting not found"
+}
+```
 
 ## Technologies Used
 
@@ -36,6 +81,8 @@ GreetingDAO
 GreetingDAOImpl
    ↓
 DBConnection
+   ↓
+Plain JDBC
    ↓
 PostgreSQL
 ```
@@ -77,13 +124,7 @@ Greetings-App
 greetings_app
 ```
 
-### Create Database
-
-```sql
-CREATE DATABASE greetings_app;
-```
-
-### Create Table
+### Table
 
 ```sql
 CREATE TABLE greetings (
@@ -112,48 +153,58 @@ db.password=YOUR_PASSWORD
 
 Do not push `db.properties` to GitHub.
 
-Use `db.properties.example`:
+## API Endpoints
 
-```properties
-db.url=jdbc:postgresql://localhost:5432/greetings_app
-db.username=postgres
-db.password=YOUR_PASSWORD
+| ID    | Use Case           | Endpoint          | Method |
+| ----- | ------------------ | ----------------- | ------ |
+| UC-01 | Create Greeting    | `/greetings`      | POST   |
+| UC-02 | Get Greeting By ID | `/greetings/{id}` | GET    |
+
+## How to Run
+
+### 1. Create Database
+
+```sql
+CREATE DATABASE greetings_app;
 ```
 
-## API
+### 2. Create Table
 
-### Create Greeting
+Run the `greetings` table SQL given above.
 
-**Method**
+### 3. Configure Database
+
+Create `db.properties` and add your PostgreSQL credentials.
+
+### 4. Build Project
+
+```bash
+mvn clean package
+```
+
+### 5. Run with Tomcat
+
+Deploy the generated WAR file to Apache Tomcat and start the server.
+
+### 6. Test with Postman
+
+**UC-01**
 
 ```text
-POST
+POST http://localhost:8080/greetings
 ```
-
-**URL**
-
-```text
-http://localhost:8080/greetings
-```
-
-### Request Body
 
 ```json
 {
   "userName": "Jyothish",
-  "greetingMessage": "Hello, welcome to My Greetings App!"
+  "greetingMessage": "Hello, welcome!"
 }
 ```
 
-### Response
+**UC-02**
 
-```json
-{
-  "greetingId": 1,
-  "userName": "Jyothish",
-  "greetingMessage": "Hello, welcome to My Greetings App!",
-  "createdDate": "2026-08-11T15:50:30"
-}
+```text
+GET http://localhost:8080/greetings/1
 ```
 
 ## Architecture
@@ -162,26 +213,19 @@ http://localhost:8080/greetings
 
 `GreetingServlet`
 
-Receives the HTTP request and sends the response.
+Handles HTTP requests and responses.
 
 ### Model
 
 `Greeting`
 
-Contains:
-
-```text
-greetingId
-userName
-greetingMessage
-createdDate
-```
+Represents the greeting data.
 
 ### Service
 
 `GreetingService`
 
-Contains the business logic and validation.
+Contains validation and business logic.
 
 ### DAO
 
@@ -189,58 +233,19 @@ Contains the business logic and validation.
 
 Defines database operations.
 
-`GreetingDAOImpl` contains the Plain JDBC implementation.
+`GreetingDAOImpl` implements the database operations using Plain JDBC.
 
 ### Database Connection
 
 `DBConnection`
 
-Creates the PostgreSQL database connection using JDBC.
+Creates the PostgreSQL connection.
 
-## How to Run
-
-### 1. Clone the Project
-
-```bash
-git clone <your-github-repository-url>
-cd Greetings-App
-```
-
-### 2. Create the Database
-
-```sql
-CREATE DATABASE greetings_app;
-```
-
-### 3. Create the Table
-
-Run the `greetings` table SQL given above.
-
-### 4. Configure Database
-
-Create `db.properties` and add your PostgreSQL credentials.
-
-### 5. Build the Project
-
-```bash
-mvn clean package
-```
-
-### 6. Run with Tomcat
-
-Deploy the WAR file to Apache Tomcat and start the server.
-
-### 7. Test with Postman
+## Use Case Status
 
 ```text
-POST http://localhost:8080/greetings
+UC-01: Create Greeting       COMPLETED
+UC-02: Get Greeting By ID    COMPLETED
 ```
 
-Send the JSON request shown above.
-
-## UC-01 Status
-
-```text
-UC-01: Create Greeting
-Status: COMPLETED
-```
+## Author

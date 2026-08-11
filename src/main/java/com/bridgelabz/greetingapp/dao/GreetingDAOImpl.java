@@ -40,6 +40,51 @@ public class GreetingDAOImpl implements GreetingDAO{
 
     @Override
     public Optional<Greeting> findById(Long id) throws SQLException {
+        String sql = """
+            SELECT greeting_id,
+                   user_name,
+                   greeting_message,
+                   created_date
+            FROM greetings
+            WHERE greeting_id = ?
+            """;
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            // Set ID value
+            ps.setLong(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                // Check whether a row was found
+                if (rs.next()) {
+
+                    Greeting greeting = new Greeting();
+
+                    greeting.setGreetingId(
+                            rs.getLong("greeting_id")
+                    );
+
+                    greeting.setUserName(
+                            rs.getString("user_name")
+                    );
+
+                    greeting.setGreetingMessage(
+                            rs.getString("greeting_message")
+                    );
+
+                    greeting.setCreatedDate(
+                            rs.getTimestamp("created_date")
+                                    .toLocalDateTime()
+                    );
+
+                    return Optional.of(greeting);
+                }
+            }
+        }
+
+        // No greeting found
         return Optional.empty();
     }
 
