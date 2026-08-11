@@ -77,4 +77,16 @@ public class GreetingService {
         return greetingDAO.update(id, greeting);
     }
 
+    public boolean deleteGreeting(Long id)
+            throws SQLException {
+
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException(
+                    "Greeting ID must be greater than 0"
+            );
+        }
+
+        return greetingDAO.delete(id);
+    }
+
 }

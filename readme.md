@@ -1,6 +1,6 @@
 # Greetings App
 
-A Java web application for creating, retrieving, listing, and updating greetings using Java Servlets, Plain JDBC, PostgreSQL, Maven, Jackson, Apache Tomcat, and Postman.
+A Java web application for creating, retrieving, listing, updating, and deleting greetings using Java Servlets, Plain JDBC, PostgreSQL, Maven, Jackson, Apache Tomcat, and Postman.
 
 ## Use Cases
 
@@ -10,6 +10,7 @@ A Java web application for creating, retrieving, listing, and updating greetings
 | UC-02 | Get Greeting By ID | `/greetings/{id}` | GET    |
 | UC-03 | Get All Greetings  | `/greetings`      | GET    |
 | UC-04 | Update Greeting    | `/greetings/{id}` | PUT    |
+| UC-05 | Delete Greeting    | `/greetings/{id}` | DELETE |
 
 ## Technologies Used
 
@@ -233,6 +234,30 @@ PUT http://localhost:8080/greetings/1
 }
 ```
 
+## UC-05: Delete Greeting
+
+### Endpoint
+
+```text
+DELETE /greetings/{id}
+```
+
+### Example
+
+```text
+DELETE http://localhost:8080/greetings/1
+```
+
+No request body is required.
+
+### Response
+
+```json
+{
+  "message": "Greeting deleted successfully"
+}
+```
+
 If the greeting does not exist:
 
 ```json
@@ -303,28 +328,21 @@ Deploy the generated WAR file to Apache Tomcat and start the server.
 
 ### 6. Test with Postman
 
-**UC-01**
-
 ```text
+UC-01
 POST http://localhost:8080/greetings
-```
 
-**UC-02**
-
-```text
+UC-02
 GET http://localhost:8080/greetings/1
-```
 
-**UC-03**
-
-```text
+UC-03
 GET http://localhost:8080/greetings
-```
 
-**UC-04**
-
-```text
+UC-04
 PUT http://localhost:8080/greetings/1
+
+UC-05
+DELETE http://localhost:8080/greetings/1
 ```
 
 ## Use Case Status
@@ -334,6 +352,7 @@ UC-01: Create Greeting       COMPLETED
 UC-02: Get Greeting By ID    COMPLETED
 UC-03: Get All Greetings     COMPLETED
 UC-04: Update Greeting       COMPLETED
+UC-05: Delete Greeting       COMPLETED
 ```
 
 ## Author

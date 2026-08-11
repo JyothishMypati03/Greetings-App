@@ -158,7 +158,20 @@ public class GreetingDAOImpl implements GreetingDAO{
 
     @Override
     public boolean delete(Long id) throws SQLException {
-        return false;
+        String sql = """
+            DELETE FROM greetings
+            WHERE greeting_id = ?
+            """;
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, id);
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+        }
     }
 
     @Override
